@@ -10,9 +10,10 @@ body{
   margin:0;
   font-family:'Segoe UI',sans-serif;
   background:#0a0f1c;
-  color:#fff;
+  color:#FFFFFF;
 }
 
+/* HEADER */
 header{
   background:#111827;
   padding:15px;
@@ -20,17 +21,75 @@ header{
   font-size:20px;
   font-weight:600;
   border-bottom:1px solid #1f2937;
+  color:#FFFFFF;
 }
 
+/* ===== TICKER ===== */
+.ticker-wrapper{
+  position:relative;
+  overflow:hidden;
+  background:#0f172a;
+  border-bottom:1px solid #1f2937;
+}
+
+.ticker{
+  display:inline-block;
+  white-space:nowrap;
+  padding:14px 0;
+  animation: scroll 35s linear infinite;
+  color:#FFFFFF;
+  font-weight:500;
+  font-size:14px;
+}
+
+.ticker-item{
+  display:inline-block;
+  margin-right:80px;
+}
+
+.ticker-item span{
+  font-weight:600;
+}
+
+@keyframes scroll{
+  from{ transform:translateX(100%);}
+  to{ transform:translateX(-100%);}
+}
+
+/* Fade effect levo i desno */
+.ticker-wrapper::before,
+.ticker-wrapper::after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:80px;
+  height:100%;
+  z-index:2;
+  pointer-events:none;
+}
+
+.ticker-wrapper::before{
+  left:0;
+  background:linear-gradient(to right,#0f172a,transparent);
+}
+
+.ticker-wrapper::after{
+  right:0;
+  background:linear-gradient(to left,#0f172a,transparent);
+}
+
+/* LAYOUT */
 .layout{
   display:grid;
   grid-template-columns:320px 1fr;
+  gap:0;
 }
 
 .sidebar{
   background:#0f172a;
   padding:20px;
   border-right:1px solid #1f2937;
+  color:#FFFFFF;
 }
 
 .section-title{
@@ -39,22 +98,26 @@ header{
   font-size:13px;
   opacity:0.6;
   text-transform:uppercase;
+  color:#FFFFFF;
 }
 
 .market-item{
   display:flex;
   justify-content:space-between;
   margin-bottom:12px;
+  color:#FFFFFF;
 }
 
 .positive{color:#00ff9d;}
 .negative{color:#ff4d4d;}
 
+/* NEWS GRID */
 .news-grid{
   display:grid;
   grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
   gap:20px;
   padding:20px;
+  color:#FFFFFF;
 }
 
 .card{
@@ -76,14 +139,17 @@ header{
 
 .content{
   padding:15px;
+  color:#FFFFFF;
 }
 
 .source{
   font-size:11px;
   opacity:0.6;
   margin-bottom:6px;
+  color:#FFFFFF;
 }
 
+/* BOTTOM NAV */
 .bottom-nav{
   position:fixed;
   bottom:0;
@@ -97,15 +163,25 @@ header{
 }
 
 .bottom-nav a{
-  color:white;
+  color:#FFFFFF;
   text-decoration:none;
   font-size:14px;
   opacity:0.8;
 }
 
+/* ===== MOBILE ===== */
 @media(max-width:900px){
-  .layout{grid-template-columns:1fr;}
-  .sidebar{border-right:none;border-bottom:1px solid #1f2937;}
+  .layout{
+    display:flex;
+    flex-direction:column;
+  }
+  .sidebar{
+    border-right:none;
+    border-top:1px solid #1f2937;
+    margin-top:20px;
+    width:100%;
+    padding:15px;
+  }
 }
 </style>
 </head>
@@ -114,7 +190,14 @@ header{
 
 <header>CryptoTerminal Pro</header>
 
+<!-- TICKER -->
+<div class="ticker-wrapper">
+  <div class="ticker" id="ticker"></div>
+</div>
+
 <div class="layout">
+
+<div class="news-grid" id="news"></div>
 
 <div class="sidebar">
   <div class="section-title">Live Market</div>
@@ -123,8 +206,6 @@ header{
   <div class="section-title">Top Gainers</div>
   <div id="gainers"></div>
 </div>
-
-<div class="news-grid" id="news"></div>
 
 </div>
 
@@ -136,6 +217,34 @@ header{
 
 <script>
 
+/* ===== TICKER ===== */
+async function loadTicker(){
+  const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
+  const data = await res.json();
+
+  const coins = {
+    BTC:data.bitcoin,
+    ETH:data.ethereum,
+    SOL:data.solana,
+    BNB:data.binancecoin,
+    XRP:data.ripple,
+    ADA:data.cardano
+  };
+
+  let html="";
+  for(let c in coins){
+    let ch=coins[c].usd_24h_change;
+    let cls=ch>=0?"positive":"negative";
+    html+=`<span class="ticker-item">
+      <strong>${c}</strong> $${coins[c].usd} 
+      <span class="${cls}">(${ch.toFixed(2)}%)</span>
+    </span>`;
+  }
+
+  document.getElementById("ticker").innerHTML=html;
+}
+
+/* ===== SIDEBAR MARKET ===== */
 async function loadMarket(){
 const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
 const data=await res.json();
@@ -161,6 +270,7 @@ html+=`<div class="market-item">
 document.getElementById("market").innerHTML=html;
 }
 
+/* ===== TOP GAINERS ===== */
 async function loadGainers(){
 const res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=percent_change_24h_desc&per_page=5&page=1&sparkline=false");
 const data=await res.json();
@@ -175,6 +285,7 @@ html+=`<div class="market-item">
 document.getElementById("gainers").innerHTML=html;
 }
 
+/* ===== NEWS ===== */
 async function fetchRSS(url,source){
 const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
 const data=await res.json();
@@ -214,7 +325,9 @@ html+=`<div class="card">
 document.getElementById("news").innerHTML=html;
 }
 
+/* ===== REFRESH ===== */
 function refreshAll(){
+loadTicker();
 loadMarket();
 loadGainers();
 loadNews();
@@ -227,3 +340,7 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
+
+
+
+
