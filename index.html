@@ -80,8 +80,10 @@ header{
 /* ===== LAYOUT DESKTOP ===== */
 .layout{
   display:grid;
-  grid-template-columns:320px 1fr; /* sidebar levo, news desno */
+  grid-template-columns:minmax(250px,20%) 1fr; /* fleksibilni sidebar */
   gap:0;
+  max-width:1200px; /* centriranje */
+  margin:0 auto;
 }
 
 .sidebar{
@@ -89,6 +91,8 @@ header{
   padding:20px;
   border-right:1px solid #1f2937;
   color:#FFFFFF;
+  min-width:250px;  
+  max-width:300px;  
 }
 
 .section-title{
@@ -159,6 +163,7 @@ header{
   justify-content:space-around;
   padding:12px 0;
   border-top:1px solid #1f2937;
+  z-index:10;
 }
 
 .bottom-nav button{
@@ -306,7 +311,8 @@ const data=await res.json();
 return data.items.slice(0,4).map(i=>({
 title:i.title,
 link:i.link,
-thumbnail:i.thumbnail || "https://via.placeholder.com/400x200?text=No+Image",
+// Ako nema sliku u RSS-u, ubaci default crypto sliku
+thumbnail:i.thumbnail || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
 desc:i.description.replace(/<[^>]*>?/gm,'').substring(0,110),
 source:source
 }));
