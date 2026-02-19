@@ -291,52 +291,57 @@ document.getElementById("gainers").innerHTML=html;
 
 /* ===== NEWS ===== */
 async function fetchRSS(url,source){
-const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
-const data=await res.json();
-return data.items.slice(0,8).map(i=>({ // 8 po feedu
-title:i.title,
-link:i.link,
-thumbnail:i.thumbnail || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
-desc:i.description.replace(/<[^>]*>?/gm,'').substring(0,110),
-source:source
-}));
+  const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+  const data = await res.json();
+  const parser = new DOMParser();
+  const xml = parser.parseFromString(data.contents, "text/xml");
+  const items = Array.from(xml.querySelectorAll("item")).slice(0,8);
+  return items.map(i=>({
+    title: i.querySelector("title")?.textContent || "No title",
+    link: i.querySelector("link")?.textContent || "#",
+    thumbnail: i.querySelector("media\\:content")?.getAttribute("url") 
+               || i.querySelector("enclosure")?.getAttribute("url") 
+               || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
+    desc: (i.querySelector("description")?.textContent || "").substring(0,110),
+    source: source
+  }));
 }
 
 async function loadNews(){
-const feeds=await Promise.all([
-fetchRSS("https://cointelegraph.com/rss","Cointelegraph"),
-fetchRSS("https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"),
-fetchRSS("https://cryptoslate.com/feed/","CryptoSlate"),
-fetchRSS("https://www.theblock.co/rss","TheBlock"),
-fetchRSS("https://news.bitcoin.com/feed/","Bitcoin.com")
-]);
+  const feeds=await Promise.all([
+    fetchRSS("https://cointelegraph.com/rss","Cointelegraph"),
+    fetchRSS("https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"),
+    fetchRSS("https://cryptoslate.com/feed/","CryptoSlate"),
+    fetchRSS("https://www.theblock.co/rss","TheBlock"),
+    fetchRSS("https://news.bitcoin.com/feed/","Bitcoin.com")
+  ]);
 
-let all=feeds.flat();
-all.sort(()=>Math.random()-0.5);
+  let all=feeds.flat();
+  all.sort(()=>Math.random()-0.5);
 
-let html="";
-all.forEach(n=>{
-html+=`<div class="card">
-<a href="${n.link}" target="_blank">
-<img src="${n.thumbnail}">
-<div class="content">
-<div class="source">Source: ${n.source}</div>
-<h4>${n.title}</h4>
-<p>${n.desc}...</p>
-</div>
-</a>
-</div>`;
-});
+  let html="";
+  all.forEach(n=>{
+    html+=`<div class="card">
+      <a href="${n.link}" target="_blank">
+      <img src="${n.thumbnail}">
+      <div class="content">
+      <div class="source">Source: ${n.source}</div>
+      <h4>${n.title}</h4>
+      <p>${n.desc}...</p>
+      </div>
+      </a>
+    </div>`;
+  });
 
-document.getElementById("news").innerHTML=html;
+  document.getElementById("news").innerHTML=html;
 }
 
 /* ===== REFRESH ===== */
 function refreshAll(){
-loadTicker();
-loadMarket();
-loadGainers();
-loadNews();
+  loadTicker();
+  loadMarket();
+  loadGainers();
+  loadNews();
 }
 
 refreshAll();
@@ -346,6 +351,7 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
+
 
 
 
