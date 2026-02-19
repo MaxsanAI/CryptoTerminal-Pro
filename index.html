@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>CryptoTerminal Pro</title>
@@ -13,45 +13,77 @@ body{
   color:#FFFFFF;
 }
 
-/* Header */
+/* HEADER */
 header{
   background:#111827;
   padding:15px;
   text-align:center;
-  font-size:22px;
-  font-weight:700;
+  font-size:20px;
+  font-weight:600;
   border-bottom:1px solid #1f2937;
+  color:#FFFFFF;
 }
 
-/* Ticker */
+/* ===== TICKER ===== */
 .ticker-wrapper{
+  position:relative;
   overflow:hidden;
   background:#0f172a;
   border-bottom:1px solid #1f2937;
 }
+
 .ticker{
   display:inline-block;
   white-space:nowrap;
   padding:14px 0;
-  animation:scroll 30s linear infinite;
+  animation: scroll 35s linear infinite;
+  color:#FFFFFF;
+  font-weight:500;
+  font-size:14px;
 }
+
 .ticker-item{
   display:inline-block;
-  margin-right:70px;
+  margin-right:80px;
 }
+
+.ticker-item span{
+  font-weight:600;
+}
+
 @keyframes scroll{
   from{ transform:translateX(100%);}
   to{ transform:translateX(-100%);}
 }
 
-/* News Grid */
+.ticker-wrapper::before,
+.ticker-wrapper::after{
+  content:"";
+  position:absolute;
+  top:0;
+  width:80px;
+  height:100%;
+  z-index:2;
+  pointer-events:none;
+}
+
+.ticker-wrapper::before{
+  left:0;
+  background:linear-gradient(to right,#0f172a,transparent);
+}
+
+.ticker-wrapper::after{
+  right:0;
+  background:linear-gradient(to left,#0f172a,transparent);
+}
+
+/* ===== NEWS GRID ===== */
 .news-grid{
   display:grid;
-  grid-template-columns:repeat(3,1fr);
+  grid-template-columns:repeat(2,1fr); /* dve kolone na desktopu */
   gap:20px;
   padding:20px;
-  max-width:1300px;
-  margin:0 auto;
+  color:#FFFFFF;
 }
 
 .card{
@@ -60,34 +92,57 @@ header{
   overflow:hidden;
   transition:0.3s;
 }
-.card:hover{ transform:scale(1.03);}
-.card img{ width:100%; height:180px; object-fit:cover;}
-.content{ padding:15px;}
-.source{ font-size:11px; opacity:0.6; margin-bottom:6px; }
 
-/* Live Market Section */
+.card:hover{
+  transform:scale(1.03);
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.content{
+  padding:15px;
+  color:#FFFFFF;
+}
+
+.source{
+  font-size:11px;
+  opacity:0.6;
+  margin-bottom:6px;
+  color:#FFFFFF;
+}
+
+/* ===== LIVE MARKET SECTION (ispod grida) ===== */
 .live-market{
   background:#0f172a;
   border-top:1px solid #1f2937;
   padding:20px;
-  max-width:1300px;
-  margin:20px auto 80px auto;
+  color:#FFFFFF;
 }
+
 .section-title{
-  font-size:14px;
+  margin-top:0;
+  margin-bottom:10px;
+  font-size:13px;
   opacity:0.6;
   text-transform:uppercase;
-  margin-bottom:10px;
+  color:#FFFFFF;
 }
+
 .market-item{
   display:flex;
   justify-content:space-between;
   margin-bottom:12px;
+  color:#FFFFFF;
 }
+
 .positive{color:#00ff9d;}
 .negative{color:#ff4d4d;}
 
-/* Bottom Nav */
+/* ===== BOTTOM PANEL ===== */
 .bottom-nav{
   position:fixed;
   bottom:0;
@@ -98,7 +153,9 @@ header{
   justify-content:space-around;
   padding:12px 0;
   border-top:1px solid #1f2937;
+  z-index:10;
 }
+
 .bottom-nav button{
   background:none;
   border:none;
@@ -106,25 +163,41 @@ header{
   font-size:14px;
   font-weight:500;
   cursor:pointer;
+  opacity:0.9;
+  transition:0.2s;
 }
-.bottom-nav button:hover{ color:#00ff9d; }
 
-/* Responsive */
-@media(max-width:1100px){ .news-grid{ grid-template-columns:repeat(2,1fr);} }
-@media(max-width:700px){ .news-grid{ grid-template-columns:1fr; padding:15px;} .live-market{ padding:15px;} }
+.bottom-nav button:hover{
+  opacity:1;
+  color:#00ff9d;
+}
+
+/* ===== MOBILE ===== */
+@media(max-width:900px){
+  .news-grid{
+    grid-template-columns:1fr; /* jedna kolona na mobilnom */
+    padding:15px;
+  }
+  .live-market{
+    padding:15px;
+  }
+}
 </style>
 </head>
+
 <body>
 
 <header>CryptoTerminal Pro</header>
 
-<!-- Ticker -->
-<div class="ticker-wrapper"><div class="ticker" id="ticker"></div></div>
+<!-- TICKER -->
+<div class="ticker-wrapper">
+  <div class="ticker" id="ticker"></div>
+</div>
 
-<!-- News -->
+<!-- NEWS GRID -->
 <div class="news-grid" id="news"></div>
 
-<!-- Live Market -->
+<!-- LIVE MARKET (ispod grida) -->
 <div class="live-market">
   <div class="section-title">Live Market</div>
   <div id="market"></div>
@@ -133,7 +206,7 @@ header{
   <div id="gainers"></div>
 </div>
 
-<!-- Bottom Nav -->
+<!-- BOTTOM PANEL -->
 <div class="bottom-nav">
   <button onclick="refreshAll()">🔄 Refresh</button>
   <button onclick="document.getElementById('gainers').scrollIntoView({behavior:'smooth'})">💹 Top Coins</button>
@@ -141,80 +214,131 @@ header{
 </div>
 
 <script>
-// ===== TICKER =====
+
+/* ===== TICKER ===== */
 async function loadTicker(){
-  try{
-    const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
-    const data = await res.json();
-    const coins = { BTC:data.bitcoin, ETH:data.ethereum, SOL:data.solana, BNB:data.binancecoin, XRP:data.ripple, ADA:data.cardano };
-    let html="";
-    for(let c in coins){
-      const ch = coins[c].usd_24h_change;
-      const cls = ch>=0?"positive":"negative";
-      html+=`<span class="ticker-item"><strong>${c}</strong> $${coins[c].usd} <span class="${cls}">(${ch.toFixed(2)}%)</span></span>`;
-    }
-    document.getElementById("ticker").innerHTML=html;
-  }catch(e){ console.error(e);}
-}
+  const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
+  const data = await res.json();
 
-// ===== LIVE MARKET =====
-async function loadMarket(){
-  try{
-    const res = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false");
-    const data = await res.json();
-    let mhtml="", ghtml="";
-    data.forEach((c,i)=>{
-      const cls = c.price_change_percentage_24h>=0?"positive":"negative";
-      mhtml+=`<div class="market-item"><span>${c.symbol.toUpperCase()}</span><span>$${c.current_price} <span class="${cls}">(${c.price_change_percentage_24h.toFixed(2)}%)</span></span></div>`;
-      if(i<5){
-        ghtml+=`<div class="market-item"><span>${c.symbol.toUpperCase()}</span><span class="positive">${c.price_change_percentage_24h.toFixed(2)}%</span></div>`;
-      }
-    });
-    document.getElementById("market").innerHTML=mhtml;
-    document.getElementById("gainers").innerHTML=ghtml;
-  }catch(e){ console.error(e);}
-}
+  const coins = {
+    BTC:data.bitcoin,
+    ETH:data.ethereum,
+    SOL:data.solana,
+    BNB:data.binancecoin,
+    XRP:data.ripple,
+    ADA:data.cardano
+  };
 
-// ===== NEWS (CoinPaprika) =====
-async function loadNews(){
-  try{
-    const res = await fetch("https://api.coinpaprika.com/v1/notes"); // CoinPaprika API
-    const data = await res.json();
-    const articles = data.slice(0,30);
-    let html="";
-    articles.forEach(n=>{
-      html+=`<div class="card">
-                <a href="${n.url}" target="_blank">
-                  <img src="${n.image || 'https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200'}">
-                  <div class="content">
-                    <div class="source">Source: CoinPaprika</div>
-                    <h4>${n.title}</h4>
-                    <p>${n.description ? n.description.substring(0,110) + "..." : ""}</p>
-                  </div>
-                </a>
-             </div>`;
-    });
-    document.getElementById("news").innerHTML=html;
-  }catch(e){
-    console.error("Error loading news",e);
-    document.getElementById("news").innerHTML="<p style='text-align:center;'>News unavailable</p>";
+  let html="";
+  for(let c in coins){
+    let ch=coins[c].usd_24h_change;
+    let cls=ch>=0?"positive":"negative";
+    html+=`<span class="ticker-item">
+      <strong>${c}</strong> $${coins[c].usd} 
+      <span class="${cls}">(${ch.toFixed(2)}%)</span>
+    </span>`;
   }
+
+  document.getElementById("ticker").innerHTML=html;
 }
 
-// ===== REFRESH ALL =====
+/* ===== LIVE MARKET ===== */
+async function loadMarket(){
+const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
+const data=await res.json();
+
+let coins={
+BTC:data.bitcoin,
+ETH:data.ethereum,
+SOL:data.solana,
+BNB:data.binancecoin,
+XRP:data.ripple,
+ADA:data.cardano
+};
+
+let html="";
+for(let c in coins){
+let ch=coins[c].usd_24h_change;
+let cls=ch>=0?"positive":"negative";
+html+=`<div class="market-item">
+<span>${c}</span>
+<span>$${coins[c].usd} <span class="${cls}">(${ch.toFixed(2)}%)</span></span>
+</div>`;
+}
+document.getElementById("market").innerHTML=html;
+}
+
+/* ===== TOP GAINERS ===== */
+async function loadGainers(){
+const res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=percent_change_24h_desc&per_page=5&page=1&sparkline=false");
+const data=await res.json();
+
+let html="";
+data.slice(0,5).forEach(c=>{
+html+=`<div class="market-item">
+<span>${c.symbol.toUpperCase()}</span>
+<span class="positive">${c.price_change_percentage_24h.toFixed(2)}%</span>
+</div>`;
+});
+document.getElementById("gainers").innerHTML=html;
+}
+
+/* ===== NEWS ===== */
+async function fetchRSS(url,source){
+const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
+const data=await res.json();
+return data.items.slice(0,4).map(i=>({
+title:i.title,
+link:i.link,
+// Ako nema sliku u RSS-u, ubaci default crypto sliku
+thumbnail:i.thumbnail || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
+desc:i.description.replace(/<[^>]*>?/gm,'').substring(0,110),
+source:source
+}));
+}
+
+async function loadNews(){
+const feeds=await Promise.all([
+fetchRSS("https://cointelegraph.com/rss","Cointelegraph"),
+fetchRSS("https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"),
+fetchRSS("https://cryptoslate.com/feed/","CryptoSlate")
+]);
+
+let all=feeds.flat();
+all.sort(()=>Math.random()-0.5);
+
+let html="";
+all.forEach(n=>{
+html+=`<div class="card">
+<a href="${n.link}" target="_blank">
+<img src="${n.thumbnail}">
+<div class="content">
+<div class="source">Source: ${n.source}</div>
+<h4>${n.title}</h4>
+<p>${n.desc}...</p>
+</div>
+</a>
+</div>`;
+});
+
+document.getElementById("news").innerHTML=html;
+}
+
+/* ===== REFRESH ===== */
 function refreshAll(){
-  loadTicker();
-  loadMarket();
-  loadNews();
+loadTicker();
+loadMarket();
+loadGainers();
+loadNews();
 }
 
 refreshAll();
 setInterval(refreshAll,60000);
+
 </script>
 
 </body>
 </html>
-
 
 
 
