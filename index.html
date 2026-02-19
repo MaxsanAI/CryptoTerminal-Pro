@@ -80,7 +80,7 @@ header{
 /* ===== NEWS GRID ===== */
 .news-grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr); /* dve kolone na desktopu */
+  grid-template-columns:repeat(2,1fr); /* dve kolone desktop */
   gap:20px;
   padding:20px;
   color:#FFFFFF;
@@ -175,7 +175,7 @@ header{
 /* ===== MOBILE ===== */
 @media(max-width:900px){
   .news-grid{
-    grid-template-columns:1fr; /* jedna kolona na mobilnom */
+    grid-template-columns:1fr; /* jedna kolona */
     padding:15px;
   }
   .live-market{
@@ -287,10 +287,9 @@ document.getElementById("gainers").innerHTML=html;
 async function fetchRSS(url,source){
 const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
 const data=await res.json();
-return data.items.slice(0,4).map(i=>({
+return data.items.slice(0,8).map(i=>({ // povecano sa 4 na 8
 title:i.title,
 link:i.link,
-// Ako nema sliku u RSS-u, ubaci default crypto sliku
 thumbnail:i.thumbnail || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
 desc:i.description.replace(/<[^>]*>?/gm,'').substring(0,110),
 source:source
@@ -301,7 +300,9 @@ async function loadNews(){
 const feeds=await Promise.all([
 fetchRSS("https://cointelegraph.com/rss","Cointelegraph"),
 fetchRSS("https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"),
-fetchRSS("https://cryptoslate.com/feed/","CryptoSlate")
+fetchRSS("https://cryptoslate.com/feed/","CryptoSlate"),
+fetchRSS("https://www.theblock.co/rss","TheBlock"),
+fetchRSS("https://news.bitcoin.com/feed/","Bitcoin.com")
 ]);
 
 let all=feeds.flat();
@@ -339,6 +340,5 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
-
 
 
