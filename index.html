@@ -77,46 +77,10 @@ header{
   background:linear-gradient(to left,#0f172a,transparent);
 }
 
-/* ===== LAYOUT DESKTOP ===== */
-.layout{
-  display:grid;
-  grid-template-columns:300px 1fr; /* fiksni sidebar 300px */
-  gap:0;
-  max-width:1400px;
-  margin:0 auto;
-}
-
-.sidebar{
-  background:#0f172a;
-  padding:20px;
-  border-right:1px solid #1f2937;
-  color:#FFFFFF;
-  width:300px;  /* fiksna širina */
-}
-
-.section-title{
-  margin-top:20px;
-  margin-bottom:10px;
-  font-size:13px;
-  opacity:0.6;
-  text-transform:uppercase;
-  color:#FFFFFF;
-}
-
-.market-item{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-  color:#FFFFFF;
-}
-
-.positive{color:#00ff9d;}
-.negative{color:#ff4d4d;}
-
-/* NEWS GRID */
+/* ===== NEWS GRID ===== */
 .news-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  grid-template-columns:repeat(2,1fr); /* dve kolone na desktopu */
   gap:20px;
   padding:20px;
   color:#FFFFFF;
@@ -151,6 +115,33 @@ header{
   color:#FFFFFF;
 }
 
+/* ===== LIVE MARKET SECTION (ispod grida) ===== */
+.live-market{
+  background:#0f172a;
+  border-top:1px solid #1f2937;
+  padding:20px;
+  color:#FFFFFF;
+}
+
+.section-title{
+  margin-top:0;
+  margin-bottom:10px;
+  font-size:13px;
+  opacity:0.6;
+  text-transform:uppercase;
+  color:#FFFFFF;
+}
+
+.market-item{
+  display:flex;
+  justify-content:space-between;
+  margin-bottom:12px;
+  color:#FFFFFF;
+}
+
+.positive{color:#00ff9d;}
+.negative{color:#ff4d4d;}
+
 /* ===== BOTTOM PANEL ===== */
 .bottom-nav{
   position:fixed;
@@ -183,18 +174,11 @@ header{
 
 /* ===== MOBILE ===== */
 @media(max-width:900px){
-  .layout{
-    display:flex;
-    flex-direction:column; /* news prvo, sidebar dole */
-  }
-  .sidebar{
-    width:100%;
-    border-right:none;
-    border-top:1px solid #1f2937;
-    margin-top:20px;
+  .news-grid{
+    grid-template-columns:1fr; /* jedna kolona na mobilnom */
     padding:15px;
   }
-  .news-grid{
+  .live-market{
     padding:15px;
   }
 }
@@ -210,20 +194,16 @@ header{
   <div class="ticker" id="ticker"></div>
 </div>
 
-<div class="layout">
-
 <!-- NEWS GRID -->
 <div class="news-grid" id="news"></div>
 
-<!-- SIDEBAR -->
-<div class="sidebar">
+<!-- LIVE MARKET (ispod grida) -->
+<div class="live-market">
   <div class="section-title">Live Market</div>
   <div id="market"></div>
 
   <div class="section-title">Top Gainers</div>
   <div id="gainers"></div>
-</div>
-
 </div>
 
 <!-- BOTTOM PANEL -->
@@ -262,7 +242,7 @@ async function loadTicker(){
   document.getElementById("ticker").innerHTML=html;
 }
 
-/* ===== SIDEBAR MARKET ===== */
+/* ===== LIVE MARKET ===== */
 async function loadMarket(){
 const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
 const data=await res.json();
