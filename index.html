@@ -83,7 +83,10 @@ header{
   grid-template-columns:repeat(2,1fr); /* dve kolone desktop */
   gap:20px;
   padding:20px;
+  max-width:1200px;
+  margin:0 auto;
   color:#FFFFFF;
+  padding-bottom:20px; /* da ne ide ispod bottom nav */
 }
 
 .card{
@@ -121,6 +124,8 @@ header{
   border-top:1px solid #1f2937;
   padding:20px;
   color:#FFFFFF;
+  max-width:1200px;
+  margin:20px auto 80px auto; /* auto centriranje + spacing od bottom nav */
 }
 
 .section-title{
@@ -180,6 +185,7 @@ header{
   }
   .live-market{
     padding:15px;
+    margin:15px auto 80px auto;
   }
 }
 </style>
@@ -287,7 +293,7 @@ document.getElementById("gainers").innerHTML=html;
 async function fetchRSS(url,source){
 const res=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(url)}`);
 const data=await res.json();
-return data.items.slice(0,8).map(i=>({ // povecano sa 4 na 8
+return data.items.slice(0,8).map(i=>({ // 8 po feedu
 title:i.title,
 link:i.link,
 thumbnail:i.thumbnail || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
@@ -340,5 +346,6 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
+
 
 
