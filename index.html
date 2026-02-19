@@ -80,9 +80,9 @@ header{
 /* ===== LAYOUT DESKTOP ===== */
 .layout{
   display:grid;
-  grid-template-columns:minmax(250px,20%) 1fr; /* fleksibilni sidebar */
+  grid-template-columns:300px 1fr; /* fiksni sidebar 300px */
   gap:0;
-  max-width:1200px; /* centriranje */
+  max-width:1400px;
   margin:0 auto;
 }
 
@@ -91,8 +91,7 @@ header{
   padding:20px;
   border-right:1px solid #1f2937;
   color:#FFFFFF;
-  min-width:250px;  
-  max-width:300px;  
+  width:300px;  /* fiksna širina */
 }
 
 .section-title{
@@ -189,10 +188,10 @@ header{
     flex-direction:column; /* news prvo, sidebar dole */
   }
   .sidebar{
+    width:100%;
     border-right:none;
     border-top:1px solid #1f2937;
     margin-top:20px;
-    width:100%;
     padding:15px;
   }
   .news-grid{
