@@ -175,15 +175,24 @@ async function loadMarket(){
   }catch(e){ console.error(e);}
 }
 
-// ===== NEWS =====
+// ===== NEWS (CoinPaprika) =====
 async function loadNews(){
   try{
-    const res = await fetch("https://api.coingecko.com/api/v3/news");
+    const res = await fetch("https://api.coinpaprika.com/v1/notes"); // CoinPaprika API
     const data = await res.json();
-    const articles = data.data.slice(0,30);
+    const articles = data.slice(0,30);
     let html="";
     articles.forEach(n=>{
-      html+=`<div class="card"><a href="${n.url}" target="_blank"><img src="${n.image || 'https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200'}"><div class="content"><div class="source">Source: ${n.source_name}</div><h4>${n.title}</h4><p>${n.text.substring(0,110)}...</p></div></a></div>`;
+      html+=`<div class="card">
+                <a href="${n.url}" target="_blank">
+                  <img src="${n.image || 'https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200'}">
+                  <div class="content">
+                    <div class="source">Source: CoinPaprika</div>
+                    <h4>${n.title}</h4>
+                    <p>${n.description ? n.description.substring(0,110) + "..." : ""}</p>
+                  </div>
+                </a>
+             </div>`;
     });
     document.getElementById("news").innerHTML=html;
   }catch(e){
@@ -205,6 +214,7 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
+
 
 
 
