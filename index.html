@@ -13,197 +13,78 @@ body{
   color:#FFFFFF;
 }
 
-/* HEADER */
+/* Header */
 header{
   background:#111827;
   padding:15px;
   text-align:center;
-  font-size:20px;
-  font-weight:600;
+  font-size:22px;
+  font-weight:700;
   border-bottom:1px solid #1f2937;
-  color:#FFFFFF;
 }
 
-/* ===== TICKER ===== */
+/* Ticker */
 .ticker-wrapper{
   position:relative;
   overflow:hidden;
   background:#0f172a;
   border-bottom:1px solid #1f2937;
 }
+.ticker{ display:inline-block; white-space:nowrap; padding:14px 0; animation:scroll 30s linear infinite; }
+.ticker-item{ display:inline-block; margin-right:70px; }
+@keyframes scroll{ from{transform:translateX(100%);} to{transform:translateX(-100%);} }
 
-.ticker{
-  display:inline-block;
-  white-space:nowrap;
-  padding:14px 0;
-  animation: scroll 35s linear infinite;
-  color:#FFFFFF;
-  font-weight:500;
-  font-size:14px;
-}
-
-.ticker-item{
-  display:inline-block;
-  margin-right:80px;
-}
-
-.ticker-item span{
-  font-weight:600;
-}
-
-@keyframes scroll{
-  from{ transform:translateX(100%);}
-  to{ transform:translateX(-100%);}
-}
-
-.ticker-wrapper::before,
-.ticker-wrapper::after{
-  content:"";
-  position:absolute;
-  top:0;
-  width:80px;
-  height:100%;
-  z-index:2;
-  pointer-events:none;
-}
-
-.ticker-wrapper::before{
-  left:0;
-  background:linear-gradient(to right,#0f172a,transparent);
-}
-
-.ticker-wrapper::after{
-  right:0;
-  background:linear-gradient(to left,#0f172a,transparent);
-}
-
-/* ===== NEWS GRID ===== */
+/* News Grid */
 .news-grid{
   display:grid;
-  grid-template-columns:repeat(2,1fr); /* dve kolone desktop */
+  grid-template-columns:repeat(3,1fr);
   gap:20px;
   padding:20px;
-  max-width:1200px;
+  max-width:1300px;
   margin:0 auto;
-  color:#FFFFFF;
-  padding-bottom:20px; /* da ne ide ispod bottom nav */
 }
 
-.card{
-  background:#111827;
-  border-radius:10px;
-  overflow:hidden;
-  transition:0.3s;
-}
+.card{ background:#111827; border-radius:10px; overflow:hidden; transition:0.3s;}
+.card:hover{ transform:scale(1.03); }
+.card img{ width:100%; height:180px; object-fit:cover; }
+.content{ padding:15px; }
 
-.card:hover{
-  transform:scale(1.03);
-}
+/* Source label */
+.source{ font-size:11px; opacity:0.6; margin-bottom:6px; }
 
-.card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-}
+/* Live Market Section */
+.live-market{ background:#0f172a; border-top:1px solid #1f2937; padding:20px; max-width:1300px; margin:20px auto 80px auto; }
+.section-title{ font-size:14px; opacity:0.6; text-transform:uppercase; margin-bottom:10px; }
+.market-item{ display:flex; justify-content:space-between; margin-bottom:12px; }
 
-.content{
-  padding:15px;
-  color:#FFFFFF;
-}
+.positive{color:#00ff9d;} .negative{color:#ff4d4d;}
 
-.source{
-  font-size:11px;
-  opacity:0.6;
-  margin-bottom:6px;
-  color:#FFFFFF;
-}
-
-/* ===== LIVE MARKET SECTION (ispod grida) ===== */
-.live-market{
-  background:#0f172a;
-  border-top:1px solid #1f2937;
-  padding:20px;
-  color:#FFFFFF;
-  max-width:1200px;
-  margin:20px auto 80px auto; /* auto centriranje + spacing od bottom nav */
-}
-
-.section-title{
-  margin-top:0;
-  margin-bottom:10px;
-  font-size:13px;
-  opacity:0.6;
-  text-transform:uppercase;
-  color:#FFFFFF;
-}
-
-.market-item{
-  display:flex;
-  justify-content:space-between;
-  margin-bottom:12px;
-  color:#FFFFFF;
-}
-
-.positive{color:#00ff9d;}
-.negative{color:#ff4d4d;}
-
-/* ===== BOTTOM PANEL ===== */
+/* Bottom Nav */
 .bottom-nav{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  background:#111827;
-  display:flex;
-  justify-content:space-around;
-  padding:12px 0;
-  border-top:1px solid #1f2937;
-  z-index:10;
+  position:fixed; bottom:0; left:0; right:0; background:#111827;
+  display:flex; justify-content:space-around; padding:12px 0; border-top:1px solid #1f2937;
 }
-
 .bottom-nav button{
-  background:none;
-  border:none;
-  color:#FFFFFF;
-  font-size:14px;
-  font-weight:500;
-  cursor:pointer;
-  opacity:0.9;
-  transition:0.2s;
+  background:none; border:none; color:#FFFFFF; font-size:14px; font-weight:500; cursor:pointer;
 }
+.bottom-nav button:hover{ color:#00ff9d; }
 
-.bottom-nav button:hover{
-  opacity:1;
-  color:#00ff9d;
-}
-
-/* ===== MOBILE ===== */
-@media(max-width:900px){
-  .news-grid{
-    grid-template-columns:1fr; /* jedna kolona */
-    padding:15px;
-  }
-  .live-market{
-    padding:15px;
-    margin:15px auto 80px auto;
-  }
-}
+/* Responsive */
+@media(max-width:1100px){ .news-grid{ grid-template-columns:repeat(2,1fr);} }
+@media(max-width:700px){ .news-grid{ grid-template-columns:1fr; padding:15px;} .live-market{ padding:15px;} }
 </style>
 </head>
-
 <body>
 
 <header>CryptoTerminal Pro</header>
 
-<!-- TICKER -->
-<div class="ticker-wrapper">
-  <div class="ticker" id="ticker"></div>
-</div>
+<!-- Ticker -->
+<div class="ticker-wrapper"><div class="ticker" id="ticker"></div></div>
 
-<!-- NEWS GRID -->
+<!-- News -->
 <div class="news-grid" id="news"></div>
 
-<!-- LIVE MARKET (ispod grida) -->
+<!-- Live Market -->
 <div class="live-market">
   <div class="section-title">Live Market</div>
   <div id="market"></div>
@@ -212,7 +93,7 @@ header{
   <div id="gainers"></div>
 </div>
 
-<!-- BOTTOM PANEL -->
+<!-- Bottom Nav -->
 <div class="bottom-nav">
   <button onclick="refreshAll()">🔄 Refresh</button>
   <button onclick="document.getElementById('gainers').scrollIntoView({behavior:'smooth'})">💹 Top Coins</button>
@@ -221,106 +102,108 @@ header{
 
 <script>
 
-/* ===== TICKER ===== */
+// ===== TICKER =====
 async function loadTicker(){
-  const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
-  const data = await res.json();
-
-  const coins = {
-    BTC:data.bitcoin,
-    ETH:data.ethereum,
-    SOL:data.solana,
-    BNB:data.binancecoin,
-    XRP:data.ripple,
-    ADA:data.cardano
-  };
-
+  const r = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
+  const d = await r.json();
+  const coins = { BTC:d.bitcoin, ETH:d.ethereum, SOL:d.solana, BNB:d.binancecoin, XRP:d.ripple, ADA:d.cardano };
   let html="";
   for(let c in coins){
-    let ch=coins[c].usd_24h_change;
-    let cls=ch>=0?"positive":"negative";
+    const ch = coins[c].usd_24h_change;
+    const cls = ch>=0?"positive":"negative";
     html+=`<span class="ticker-item">
-      <strong>${c}</strong> $${coins[c].usd} 
-      <span class="${cls}">(${ch.toFixed(2)}%)</span>
+      <strong>${c}</strong> $${coins[c].usd} <span class="${cls}">(${ch.toFixed(2)}%)</span>
     </span>`;
   }
-
   document.getElementById("ticker").innerHTML=html;
 }
 
-/* ===== LIVE MARKET ===== */
+// ===== LIVE MARKET =====
 async function loadMarket(){
-const res=await fetch("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin,ripple,cardano&vs_currencies=usd&include_24hr_change=true");
-const data=await res.json();
-
-let coins={
-BTC:data.bitcoin,
-ETH:data.ethereum,
-SOL:data.solana,
-BNB:data.binancecoin,
-XRP:data.ripple,
-ADA:data.cardano
-};
-
-let html="";
-for(let c in coins){
-let ch=coins[c].usd_24h_change;
-let cls=ch>=0?"positive":"negative";
-html+=`<div class="market-item">
-<span>${c}</span>
-<span>$${coins[c].usd} <span class="${cls}">(${ch.toFixed(2)}%)</span></span>
-</div>`;
-}
-document.getElementById("market").innerHTML=html;
+  const r = await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=false");
+  const d = await r.json();
+  let mhtml="", ghtml="";
+  d.forEach((c,i)=>{
+    const cls = c.price_change_percentage_24h>=0?"positive":"negative";
+    mhtml+=`<div class="market-item">
+      <span>${c.symbol.toUpperCase()}</span>
+      <span>$${c.current_price} <span class="${cls}">(${c.price_change_percentage_24h.toFixed(2)}%)</span></span>
+    </div>`;
+    if(i<5){
+      ghtml+=`<div class="market-item"><span>${c.symbol.toUpperCase()}</span><span class="positive">${c.price_change_percentage_24h.toFixed(2)}%</span></div>`;
+    }
+  });
+  document.getElementById("market").innerHTML=mhtml;
+  document.getElementById("gainers").innerHTML=ghtml;
 }
 
-/* ===== TOP GAINERS ===== */
-async function loadGainers(){
-const res=await fetch("https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=percent_change_24h_desc&per_page=5&page=1&sparkline=false");
-const data=await res.json();
-
-let html="";
-data.slice(0,5).forEach(c=>{
-html+=`<div class="market-item">
-<span>${c.symbol.toUpperCase()}</span>
-<span class="positive">${c.price_change_percentage_24h.toFixed(2)}%</span>
-</div>`;
-});
-document.getElementById("gainers").innerHTML=html;
+// ===== FETCH RSS VIA PROXY =====
+async function fetchRSSviaProxy(url,source){
+  try{
+    const r = await fetch("https://api.allorigins.win/raw?url="+encodeURIComponent(url));
+    const text = await r.text();
+    const parser = new DOMParser();
+    const xml = parser.parseFromString(text, "text/xml");
+    const items = xml.querySelectorAll("item");
+    let arr=[];
+    for(let i=0; i<Math.min(6, items.length); i++){
+      const it = items[i];
+      const title = it.querySelector("title")?.textContent || "";
+      const link = it.querySelector("link")?.textContent || it.querySelector("guid")?.textContent || "#";
+      let thumb = it.querySelector("media\\:content")?.getAttribute("url")
+               || it.querySelector("enclosure")?.getAttribute("url")
+               || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200";
+      const desc = it.querySelector("description")?.textContent || "";
+      arr.push({title,link,thumbnail:thumb,desc,source});
+    }
+    return arr;
+  }catch(e){
+    return [];
+  }
 }
 
-/* ===== NEWS ===== */
-async function fetchRSS(url,source){
-  const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-  const data = await res.json();
-  const parser = new DOMParser();
-  const xml = parser.parseFromString(data.contents, "text/xml");
-  const items = Array.from(xml.querySelectorAll("item")).slice(0,8);
-  return items.map(i=>({
-    title: i.querySelector("title")?.textContent || "No title",
-    link: i.querySelector("link")?.textContent || "#",
-    thumbnail: i.querySelector("media\\:content")?.getAttribute("url") 
-               || i.querySelector("enclosure")?.getAttribute("url") 
-               || "https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
-    desc: (i.querySelector("description")?.textContent || "").substring(0,110),
-    source: source
-  }));
-}
-
+// ===== NEWS =====
 async function loadNews(){
-  const feeds=await Promise.all([
-    fetchRSS("https://cointelegraph.com/rss","Cointelegraph"),
-    fetchRSS("https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"),
-    fetchRSS("https://cryptoslate.com/feed/","CryptoSlate"),
-    fetchRSS("https://www.theblock.co/rss","TheBlock"),
-    fetchRSS("https://news.bitcoin.com/feed/","Bitcoin.com")
-  ]);
+  let newsArticles = [];
 
-  let all=feeds.flat();
-  all.sort(()=>Math.random()-0.5);
+  const feeds = [
+    ["https://cointelegraph.com/rss","Cointelegraph"],
+    ["https://www.coindesk.com/arc/outboundfeeds/rss/","CoinDesk"],
+    ["https://cryptoslate.com/feed/","CryptoSlate"],
+    ["https://cryptonews.com/news/feed/","CryptoNews"],
+    ["https://news.bitcoin.com/feed/","Bitcoin.com"],
+    ["https://www.theblock.co/rss","TheBlock"],
+    ["https://decrypt.co/feed","Decrypt"],
+    ["https://u.today/rss","U.Today"],
+    ["https://beincrypto.com/feed/","BeInCrypto"],
+    ["https://coinjournal.net/feed/","CoinJournal"]
+  ];
+
+  for(let f of feeds){
+    const arr=await fetchRSSviaProxy(f[0],f[1]);
+    newsArticles.push(...arr);
+  }
+
+  if(newsArticles.length < 10){
+    // fallback na CoinGecko news ako RSS prazni
+    try{
+      const r = await fetch("https://api.coingecko.com/api/v3/news");
+      const d = await r.json();
+      d.data.slice(0,15).forEach(n=>{
+        newsArticles.push({
+          title:n.title, link:n.url,
+          thumbnail:n.image||"https://images.unsplash.com/photo-1611078489787-6f5b7b96a2e3?fit=crop&w=400&h=200",
+          desc:n.text.substring(0,110),
+          source:n.source_name
+        });
+      });
+    }catch{}
+  }
+
+  newsArticles.sort(()=>Math.random()-0.5);
 
   let html="";
-  all.forEach(n=>{
+  newsArticles.forEach(n=>{
     html+=`<div class="card">
       <a href="${n.link}" target="_blank">
       <img src="${n.thumbnail}">
@@ -336,11 +219,10 @@ async function loadNews(){
   document.getElementById("news").innerHTML=html;
 }
 
-/* ===== REFRESH ===== */
+// ===== REFRESH ALL =====
 function refreshAll(){
   loadTicker();
   loadMarket();
-  loadGainers();
   loadNews();
 }
 
@@ -351,7 +233,6 @@ setInterval(refreshAll,60000);
 
 </body>
 </html>
-
 
 
 
